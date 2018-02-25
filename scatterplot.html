@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CMT212 Lab Week 4</title>
+    <link rel="stylesheet" href="base.css">
+    <script src="//d3js.org/d3.v4.min.js" charset="utf-8"></script>
+</head>
+<body>
+    <input type="button" onclick="update()" value="Update"/>
+    <div id="vis">
+    </div>
+
+
+    <script>
+
+        var width = 500;
+        var height = 500;
+
+        var maxX = 55;
+        var maxY = 20;
+
+        var margin = {
+          top:20,
+          left:30,
+          right: 60,
+          bottom: 40,
+        }
+
+        var svg = d3.select("#vis")
+            .append("svg")
+              .attr('width', width)
+              .attr('height', height)
+            .append("g")
+              .attr('transform', 'translate (' + margin.left + ',' + margin.top +')');
+
+
+
+        width = width - margin.left - margin.right;
+        height = height - margin.top - margin.bottom;
+
+        x_scale = d3.scaleLinear()
+            .domain([1, maxX])
+            .range([0, width]);
+
+        y_scale = d3.scaleLinear()
+            .domain([1, maxY])
+            .range([height, 0])
+            .clamp(true);
+
+        var x_axis = d3.axisBottom(x_scale);
+        var y_axis = d3.axisRight(y_scale);
+
+        svg.append('g')
+            .attr('transform', 'translate ( 0, ' + height + ')')
+            .attr('class', 'x axis');
+
+        svg.append('g')
+            .attr('transform', 'translate (' + width + ', 0 )')
+            .attr('class', 'y axis');
+
+
+
+        function update() {
+            var exampleData = createRandomData();
+            console.log(exampleData);
+
+            var t = d3.transition()
+                .duration(1000);
+
+            var dots = svg.selectAll(".dot")
+               .data(exampleData);
+
+           dots
+               .exit()
+               .transition(t)
+               .attr('cy', 0)
+               .attr('cx', 0)
+               .style('opacity', 0)
+               .remove();
+
+            var new_dots = dots
+                .enter()
+                .append('circle')
+                .attr('r', 3)
+                .attr('fill', 'red')
+                .attr('stroke', 'black')
+                .attr('class','dot')
+                .style('opacity', 0);
+
+
+
+                new_dots.merge(dots)
+                    .transition(t)
+                    .attr("cy", function(d, i){ return y_scale(d.y) })
+                    .attr("cx", function(d, i){ return x_scale(d.x) })
+                    .style('opacity', 1);
+
+                svg.select('.x.axis')
+                  .call(x_axis);
+
+
+                svg.select('.y.axis')
+                  .call(y_axis);
+
+                // var labels = svg.selectAll('.label')
+                //     .data(exampleData);
+                //
+                // labels
+                //     .exit()
+                //     .transition(t)
+                //     .attr('y', 0)
+                //     .attr('x', 0)
+                //     .style('opacity', 0)
+                //     .remove()
+                //
+                //
+                // var new_labels = labels
+                //         .enter()
+                //         .append('text')
+                //         .attr('stroke', 'black')
+                //         .attr('class','label')
+                //         .style('opacity', 0);
+                //
+                // new_labels.merge(labels)
+                //         .transition(t)
+                //         .attr("y", function(d, i){ return y_scale(d.y) })
+                //         .attr("x", function(d, i){ return x_scale(d.x) })
+                //           .text(function(d,i){return d.z })
+                //           .style('opacity', 1);
+
+
+
+        }
+
+        /* create an array between 1 and 100 items long,
+        filled with arrays containing two random values between 1 and 50 */
+        function createRandomData() {
+            var numDataItems = Math.floor((Math.random() * 100) + 1);
+            var d = [];
+            for(var i = 0; i < numDataItems; i++) {
+                var x = Math.floor((Math.random() * 50) + 1);
+                var y = Math.floor((Math.random() * 20) + 1);
+                var z = "Barcelona";
+                d.push({"x": x, "y": y, "z":z});
+            }
+            return d;
+        }
+
+        update();
+
+
+
+    </script>
+</body>
+</html>
