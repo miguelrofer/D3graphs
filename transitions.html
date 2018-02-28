@@ -1,0 +1,45 @@
+<DOCTYPE html>
+<html>
+
+<head>
+  <title>D3 Tutorial</title>
+  <script src='http://d3js.org/d3.v3.min.js'></script>
+</head>
+
+<body>
+
+    <script>
+
+// this creates the canvas where the graph is going to be displayed
+      var canvas= d3.select('body')
+                    .append('svg')
+                    .attr('width', 800)
+                    .attr('height', 800);
+
+
+      var circle = canvas.append('circle')
+                       .attr('cx', 50)
+                       .attr('cy', 50)
+                       .attr('r', 25);
+
+
+      circle.transition()
+      // duration is specified on milliseconds, so 2000 is 2 seconds
+            .duration(1500)
+            .delay(1000)
+            .attr('cx', 150)
+            .transition()
+            .attr('cy', 250)
+            .transition()
+            .attr('cx', 350)
+            .transition()
+            .attr('cy', 50)
+            .each('end', function(){d3.select(this).attr('fill','red');})
+
+
+
+    </script>
+
+</body>
+
+</html>
