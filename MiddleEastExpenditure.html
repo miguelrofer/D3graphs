@@ -4,7 +4,14 @@
 <head>
 	<meta charset="utf-8">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.6.0/d3.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+
 	<style>
+
+		*{
+			font-family: Lato;
+		}
+
 		.axis-x path {
 			stroke: #000;
 		}
@@ -19,20 +26,51 @@
 		.line:hover {
 			stroke-width: 2px;
 		}
+
+		#container{
+		display: flex;
+		flex-wrap: wrap;
+		}
+		#headline{
+			min-width:100%;
+		}
+
+		#menu{
+			display: inline;
+			width: 100%;
+			/* border:1px solid black; */
+			/* padding: 1%; */
+		}
+
+		#nation{
+			display: inline;
+			padding-left: 1%;
+		}
+
+		span{
+			color:rgb(25, 159, 139)
+		}
+
+
+
 	</style>
 </head>
 
 <body>
 
 	<div id="container">
-		<p id="headline" class="hed">Headline</p>
-	</div>
+		<h2 id="headline"><span>Military expenditure</span> in the Middle East</h2>
+		<p>Click on one of the following countries to see how much money they spent on military budget (in million USD).</p>
+
 
 	<div id="menu"></div>
 
-	<svg width="800" height="500"></svg>
+	<div class="graph">
+		<svg width="800" height="500"></svg>
+	</div>
 
 	</div>
+
 
 	<script>
 		// here is the code explained: https://gist.github.com/sjengle/478b85594bb048574826be43f7eeac9b
@@ -43,7 +81,7 @@
 		//define chart margins
 		let svg = d3.select("svg"),
 			margin = {
-				top: 50,
+				top: 30,
 				right: 80,
 				bottom: 40,
 				left: 50
@@ -130,7 +168,21 @@
 			g.append("g")
 				.attr("class", "axis axis-x")
 				.attr("transform", "translate(0," + height + ")")
-				.call(d3.axisBottom(x));
+				.call(d3.axisBottom(x))
+				.append("text")
+				// .attr("transform", "rotate(-90)")
+				.attr("y", 20)
+				.attr("x", 310)
+				.attr("dy", "0.9em")
+				.attr("fill", "#000")
+				.text("Year")
+				.append("text")
+				// .attr("transform", "rotate(-90)")
+				.attr("y", 20)
+				.attr("x", 310)
+				.attr("dy", "0.9em")
+				.attr("fill", "#000")
+				.text("Source:Sipri");
 
 			//append y axis
 			g.append("g")
@@ -142,7 +194,7 @@
 				.attr("x", -125)
 				.attr("dy", "0.9em")
 				.attr("fill", "#000")
-				.text("Military expenditure");
+				.text("Military expenditure (million $)");
 
 			//append country data to svg
 			let country = g.selectAll(".country")
@@ -179,16 +231,20 @@
 			for (let i = 0; i < countries.length; i++) {
 				var tick = document.createElement('input');
 				tick.type = 'checkbox';
-				tick.class = 'myCheckbox';
+				tick.id = 'myCheckbox';
 				tick.name = countries[i].id;
 				tick.value = countries[i].id;
 
 				var label = document.createElement('label');
 				label.for = countries[i].id
 				label.appendChild(document.createTextNode(countries[i].id));
+				var divcheck = document.createElement('div');
+				divcheck.id="nation";
 				// tick.appendChild(document.createTextNode(countries[i].id));
-				document.getElementById("menu").appendChild(tick);
-				document.getElementById("menu").appendChild(label);
+				divcheck.appendChild(tick);
+				divcheck.appendChild(label);
+				document.getElementById("menu").appendChild(divcheck);
+
 				tick.addEventListener("click", function() {
 
 					var lineSelected = this.value;
@@ -217,13 +273,6 @@
 			}
 
 
-// 			function showOrHide(){
-// 				d3.selectAll('.myCheckbox').on('click', function () {
-// 	var value = this.value,
-// 			checked = this.checked;
-// 	d3.select('.' + value).classed('hidden', !checked);
-// });
-// 	      }
 
 		});
 
@@ -238,25 +287,7 @@
 		}
 
 
-		// // create de boxcheck
-		// // var processResponse = function(response){
 
-
-
-
-
-
-
-
-		// function variableChange() {
-		// 	var value = this.value
-		//  	var dataFiltered = dataNested.filter(function (d) { return d.key===value })
-		//   x.domain(d3.extent(dataFiltered[0].values, function(d) { return d.date; }));
-		//   y.domain(d3.extent(dataFiltered[0].values, function(d) { return d.cror; }));
-		//   d3.select('.xAxis').transition().duration(1000).call(xAxis)
-		//   d3.select('.yAxis').transition().duration(1000).call(yAxis)
-		//   d3.select('.line').datum(dataFiltered[0].values).attr('d',line)
-		//  }
 	</script>
 </body>
 
